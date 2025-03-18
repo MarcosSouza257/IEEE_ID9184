@@ -13,7 +13,7 @@ from sklearn.linear_model import LinearRegression
 import utils
 
 # Modelo 1 - LSTM Simples
-def model_1(stock, df, target_column, learning_rate=0.001, epochs=50, batch_size=32):
+def model_1(stock, df, target_column, num_combination, learning_rate=0.001, epochs=50, batch_size=32):
     """
     Treina o LSTM e retorna as métricas de desempenho.
 
@@ -41,7 +41,7 @@ def model_1(stock, df, target_column, learning_rate=0.001, epochs=50, batch_size
     X_test_scaled = scaler.transform(X_test)
 
     # Salvando o scaler
-    joblib.dump(scaler, f"{OUTPUT_DIR}{stock}_scaler_model_1.pkl")
+    joblib.dump(scaler, f"{OUTPUT_DIR}{stock}_num_comb_{num_combination}_scaler_model_1.pkl")
 
     # Reshape apenas para LSTMs (timesteps=1, features=n_features)
     X_train_scaled = X_train_scaled.reshape((X_train_scaled.shape[0], 1, X_train_scaled.shape[1]))
@@ -75,7 +75,7 @@ def model_1(stock, df, target_column, learning_rate=0.001, epochs=50, batch_size
         verbose=1
     )
     # Salvando o modelo treinado
-    save_model(model, f"{OUTPUT_DIR}{stock}_model_1.h5")
+    save_model(model, f"{OUTPUT_DIR}{stock}_num_comb_{num_combination}_model_1.h5")
 
     # Obtendo a última loss registrada
     loss = history.history['loss'][-1]
@@ -103,7 +103,7 @@ def model_1(stock, df, target_column, learning_rate=0.001, epochs=50, batch_size
     return metrics_dict
 
 # Modelo 2 - LSTM com múltiplas camadas e Dropout
-def model_2(stock, df, target_column, learning_rate=0.001, dropout_rate=0.03, epochs=50, batch_size=32):
+def model_2(stock, df, target_column,, num_combination, learning_rate=0.001, dropout_rate=0.03, epochs=50, batch_size=32):
     """
     Treina um modelo LSTM com múltiplas camadas e Dropout e retorna as métricas de desempenho.
 
@@ -132,7 +132,7 @@ def model_2(stock, df, target_column, learning_rate=0.001, dropout_rate=0.03, ep
     X_test_scaled = scaler.transform(X_test)
 
     # Salvando o scaler
-    joblib.dump(scaler, f"{OUTPUT_DIR}{stock}_scaler_model_2.pkl")
+    joblib.dump(scaler, f"{OUTPUT_DIR}{stock}_num_comb_{num_combination}_scaler_model_2.pkl")
 
     # Reshape para LSTM (timesteps=1, features=n_features)
     X_train_scaled = X_train_scaled.reshape((X_train_scaled.shape[0], 1, X_train_scaled.shape[1]))
@@ -172,7 +172,7 @@ def model_2(stock, df, target_column, learning_rate=0.001, dropout_rate=0.03, ep
     )
 
     # Salvando o modelo treinado
-    save_model(model, f"{OUTPUT_DIR}{stock}_lstm_model_2.h5")
+    save_model(model, f"{OUTPUT_DIR}{stock}_num_comb_{num_combination}_lstm_model_2.h5")
 
     # Obtendo a última loss registrada
     loss = history.history['loss'][-1]
@@ -200,7 +200,7 @@ def model_2(stock, df, target_column, learning_rate=0.001, dropout_rate=0.03, ep
     return metrics_dict
 
 # Modelo 3
-def model_3(stock, df, target_column, learning_rate=0.001, epochs=50, batch_size=32):
+def model_3(stock, df, target_column, num_combination, learning_rate=0.001, epochs=50, batch_size=32):
     """
     Treina um modelo de Rede Neural Simples (MLP) e retorna as métricas de desempenho.
 
@@ -228,7 +228,7 @@ def model_3(stock, df, target_column, learning_rate=0.001, epochs=50, batch_size
     X_test_scaled = scaler.transform(X_test)
 
     # Salvando o scaler
-    joblib.dump(scaler, f"{OUTPUT_DIR}{stock}_scaler_model_3.pkl")
+    joblib.dump(scaler, f"{OUTPUT_DIR}{stock}_num_comb_{num_combination}_scaler_model_3.pkl")
 
     # Criando o modelo MLP
     model = Sequential([
@@ -259,7 +259,7 @@ def model_3(stock, df, target_column, learning_rate=0.001, epochs=50, batch_size
         verbose=1
     )
     # Salvando o modelo treinado
-    save_model(model, f"{OUTPUT_DIR}{stock}_lstm_model_3.h5")
+    save_model(model, f"{OUTPUT_DIR}{stock}_num_comb_{num_combination}_lstm_model_3.h5")
 
     # Obtendo a última loss registrada
     loss = history.history['loss'][-1]
@@ -287,7 +287,7 @@ def model_3(stock, df, target_column, learning_rate=0.001, epochs=50, batch_size
     return metrics_dict
 
 # Modelo 4
-def model_4(stock, df, target_column):
+def model_4(stock, df, target_column, num_combination):
     """
     Treina um modelo de Regressão Linear e retorna as métricas de desempenho.
 
@@ -325,10 +325,10 @@ def model_4(stock, df, target_column):
     model.fit(X_train_scaled, y_train)
 
     # Salvando o modelo treinado
-    joblib.dump(model, f"{OUTPUT_DIR}{stock}_model_4.pkl")
+    joblib.dump(model, f"{OUTPUT_DIR}{stock}_num_comb_{num_combination}_model_4.pkl")
 
     # Salvando o scaler
-    joblib.dump(scaler, f"{OUTPUT_DIR}{stock}_scaler_model_4.pkl")
+    joblib.dump(scaler, f"{OUTPUT_DIR}{stock}_num_comb_{num_combination}__scaler_model_4.pkl")
 
     # Previsão no conjunto de teste
     y_pred = model.predict(X_test)

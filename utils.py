@@ -392,7 +392,7 @@ def process_stocks_and_save_metrics(stock, all_stock_data, num_combination, name
             df, target_column = define_target(df)
             
             # Treinar modelo e coletar métricas
-            metrics = name_model(stock, df, target_column)
+            metrics = name_model(stock, df, target_column, num_combination)
             
             # Salvar resultados
             results.append({
