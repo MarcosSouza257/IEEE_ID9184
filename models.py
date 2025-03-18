@@ -1,4 +1,5 @@
 from utils import *
+from config import OUTPUT_DIR  # Importa a configuração da pasta de dados
 
 import joblib 
 from sklearn.preprocessing import MinMaxScaler
@@ -9,10 +10,9 @@ from keras.optimizers import Adam
 from keras.callbacks import EarlyStopping
 from sklearn.metrics import mean_squared_error, accuracy_score, r2_score, mean_absolute_error
 from sklearn.linear_model import LinearRegression
-
-# Modelo 1 - LSTM
 import utils
 
+# Modelo 1 - LSTM Simples
 def model_1(df, target_column, learning_rate=0.001, epochs=50, batch_size=32):
     """
     Treina o LSTM e retorna as métricas de desempenho.
@@ -98,7 +98,7 @@ def model_1(df, target_column, learning_rate=0.001, epochs=50, batch_size=32):
     return metrics_dict
 
 # Modelo 2 - LSTM com múltiplas camadas e Dropout
-def model_2(df, target_column, learning_rate=0.001, epochs=50, batch_size=32, model_path="lstm_model_2.h5", scaler_path="scaler.pkl"):
+def model_2(df, target_column, learning_rate=0.001, dropout_rate=0.03, epochs=50, batch_size=32, model_path=f"{OUTPUT_DIR}lstm_model_2.h5", scaler_path=f"{OUTPUT_DIR}scaler_model_2.pkl"):
     """
     Treina um modelo LSTM com múltiplas camadas e Dropout e retorna as métricas de desempenho.
 
@@ -276,6 +276,7 @@ def model_3(df, target_column, learning_rate=0.001, epochs=50, batch_size=32):
 
     return metrics_dict
 
+# Modelo 4
 def model_4(df, target_column):
     """
     Treina um modelo de Regressão Linear e retorna as métricas de desempenho.
