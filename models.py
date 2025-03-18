@@ -1,8 +1,9 @@
 from utils import *
 
+import joblib 
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
-from keras.models import Sequential
+from keras.models import Sequential, save_model
 from keras.layers import LSTM, Dense, Dropout, Input
 from keras.optimizers import Adam
 from keras.callbacks import EarlyStopping
@@ -97,7 +98,7 @@ def model_1(df, target_column, learning_rate=0.001, epochs=50, batch_size=32):
     return metrics_dict
 
 # Modelo 2 - LSTM com múltiplas camadas e Dropout
-def model_2(df, target_column, learning_rate=0.001, dropout_rate=0.03, epochs=50, batch_size=32):
+def model_2(df, target_column, learning_rate=0.001, epochs=50, batch_size=32, model_path="lstm_model_2.h5", scaler_path="scaler.pkl"):
     """
     Treina um modelo LSTM com múltiplas camadas e Dropout e retorna as métricas de desempenho.
 
@@ -124,6 +125,9 @@ def model_2(df, target_column, learning_rate=0.001, dropout_rate=0.03, epochs=50
     scaler = MinMaxScaler(feature_range=(0, 1))
     X_train_scaled = scaler.fit_transform(X_train)
     X_test_scaled = scaler.transform(X_test)
+
+    # Salvando o scaler
+    joblib.dump(scaler, scaler_path)
 
     # Reshape para LSTM (timesteps=1, features=n_features)
     X_train_scaled = X_train_scaled.reshape((X_train_scaled.shape[0], 1, X_train_scaled.shape[1]))
@@ -161,6 +165,9 @@ def model_2(df, target_column, learning_rate=0.001, dropout_rate=0.03, epochs=50
         callbacks=[early_stopping],
         verbose=1
     )
+
+    # Salvando o modelo treinado
+    save_model(model, model_path)
 
     # Obtendo a última loss registrada
     loss = history.history['loss'][-1]
