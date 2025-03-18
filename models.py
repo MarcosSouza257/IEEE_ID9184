@@ -98,7 +98,7 @@ def model_1(df, target_column, learning_rate=0.001, epochs=50, batch_size=32):
     return metrics_dict
 
 # Modelo 2 - LSTM com múltiplas camadas e Dropout
-def model_2(df, target_column, learning_rate=0.001, dropout_rate=0.03, epochs=50, batch_size=32, model_path=f"{OUTPUT_DIR}lstm_model_2.h5", scaler_path=f"{OUTPUT_DIR}scaler_model_2.pkl"):
+def model_2(stock, df, target_column, learning_rate=0.001, dropout_rate=0.03, epochs=50, batch_size=32):
     """
     Treina um modelo LSTM com múltiplas camadas e Dropout e retorna as métricas de desempenho.
 
@@ -127,7 +127,7 @@ def model_2(df, target_column, learning_rate=0.001, dropout_rate=0.03, epochs=50
     X_test_scaled = scaler.transform(X_test)
 
     # Salvando o scaler
-    joblib.dump(scaler, scaler_path)
+    joblib.dump(scaler, f"{OUTPUT_DIR}{stock}_scaler_model_2.pkl")
 
     # Reshape para LSTM (timesteps=1, features=n_features)
     X_train_scaled = X_train_scaled.reshape((X_train_scaled.shape[0], 1, X_train_scaled.shape[1]))
@@ -167,7 +167,7 @@ def model_2(df, target_column, learning_rate=0.001, dropout_rate=0.03, epochs=50
     )
 
     # Salvando o modelo treinado
-    save_model(model, model_path)
+    save_model(model, f"{OUTPUT_DIR}{stock}_lstm_model_2.h5")
 
     # Obtendo a última loss registrada
     loss = history.history['loss'][-1]

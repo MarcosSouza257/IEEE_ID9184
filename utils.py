@@ -360,7 +360,7 @@ def plot_rmse_line_plotly(df, stock_name, model_name=None):
 
     return fig
 
-def process_stocks_and_save_metrics(all_stock_data, num_combination, name_model):
+def process_stocks_and_save_metrics(stock, all_stock_data, num_combination, name_model):
     """
     Processa uma lista de ações, treina o modelo para cada uma e salva as métricas em um DataFrame.
 
@@ -392,7 +392,7 @@ def process_stocks_and_save_metrics(all_stock_data, num_combination, name_model)
             df, target_column = define_target(df)
             
             # Treinar modelo e coletar métricas
-            metrics = name_model(df, target_column)
+            metrics = name_model(stock, df, target_column)
             
             # Salvar resultados
             results.append({
