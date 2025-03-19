@@ -1,4 +1,4 @@
-from config import DATA_DIR  # Importa a configuração da pasta de dados
+from config import *
 
 import numpy as np
 import pandas as pd
@@ -7,6 +7,18 @@ import matplotlib.pyplot as plt
 import plotly.express as px
 import random
 import os
+import joblib 
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.model_selection import train_test_split
+from keras.models import Sequential, save_model
+from keras.layers import LSTM, Dense, Dropout, Input
+from keras.optimizers import Adam
+from keras.callbacks import EarlyStopping
+from sklearn.metrics import mean_squared_error, accuracy_score, r2_score, mean_absolute_error
+from sklearn.linear_model import LinearRegression
+import utils
+from tensorflow.keras.models import load_model # type: ignore
+
 
 def calcular_mms(df, periodo):
     """
@@ -405,6 +417,68 @@ def process_stocks_and_save_metrics(all_stock_data, num_combination, name_model,
             print(f"Erro ao processar {stock}: {str(e)}")
     
     return pd.DataFrame(results)
+
+
+def make_predictions(stock, df, model='model_2', num_combination=4, output_dir="output"):
+    """
+    Carrega modelos treinados, faz previsões nos dados de teste e retorna um DataFrame 
+    com os valores reais e previstos desnormalizados.
+
+    Parâmetros:
+        stock (str): Nome do ativo.
+        df (pd.DataFrame): DataFrame contendo os dados para previsão.
+        model (str): Nome do modelo salvo. Padrão: 'model_2'.
+        num_combination (int): Identificador da combinação de features usada no treinamento.
+        output_dir (str): Diretório onde os modelos e scalers estão salvos.
+
+    Retorna:
+        pd.DataFrame: DataFrame contendo os dados de teste com a coluna "close_predicted" desnormalizada.
+    """
+
+    df_results = pd.DataFrame()  # DataFrame vazio para armazenar os resultados
+
+    try:
+        # Caminhos dos arquivos salvos
+        model_path = os.path.join(OUTPUT_DIR, f"{stock}\{model}_comb_{num_combination}.h5")
+        scaler_X_path = os.path.join(OUTPUT_DIR, f"{stock}\{model}_comb_{num_combination}_scaler_X.pkl")
+        scaler_y_path = os.path.join(OUTPUT_DIR, f"{stock}\{model}_comb_{num_combination}_scaler_y.pkl")  # Scaler para y
+
+        # Carregando o modelo treinado e os scalers
+        model = load_model(model_path)
+        scaler_X = joblib.load(scaler_X_path)
+        scaler_y = joblib.load(scaler_y_path)  # Scaler para desnormalizar y
+
+        # Realizar a combinação de features escolhida
+        df, description_combination = make_combination_data(df, num_combination)
+            
+        # Definir target
+        df, target_column = define_target(df)
+
+        # Separando variáveis independentes (X) e dependente (y)
+        X = df.drop(columns=[target_column]).values
+        y = df[target_column].values
+
+        # Dividindo os dados (80% treino, 20% teste)
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=False)
+
+        # Normalizando os dados de teste
+        X_test_scaled = scaler_X.transform(X_test)
+        X_test_scaled = X_test_scaled.reshape((X_test_scaled.shape[0], 1, X_test_scaled.shape[1]))  # Reshape para LSTM
+
+        # Fazendo previsões no conjunto de teste
+        y_pred_scaled = model.predict(X_test_scaled).flatten()
+
+        # Desnormalizando as previsões
+        y_pred = scaler_y.inverse_transform(y_pred_scaled.reshape(-1, 1)).flatten()
+
+        # Criando um DataFrame com os dados de teste e as previsões desnormalizadas
+        df_results = df.iloc[len(X_train):].copy()  # Pegando apenas os 20% finais (testes)
+        df_results["close_predicted"] = y_pred
+
+    except Exception as e:
+        print(f"Erro ao processar {stock}: {e}")
+
+    return df_results
 
 
 

@@ -1,16 +1,5 @@
 from utils import *
-from config import OUTPUT_DIR  # Importa a configuração da pasta de dados
-
-import joblib 
-from sklearn.preprocessing import MinMaxScaler
-from sklearn.model_selection import train_test_split
-from keras.models import Sequential, save_model
-from keras.layers import LSTM, Dense, Dropout, Input
-from keras.optimizers import Adam
-from keras.callbacks import EarlyStopping
-from sklearn.metrics import mean_squared_error, accuracy_score, r2_score, mean_absolute_error
-from sklearn.linear_model import LinearRegression
-import utils
+from config import *
 
 # Modelo 1 - LSTM Simples
 def model_1(stock, df, target_column, num_combination, save_artifacts=False, learning_rate=0.001, epochs=50, batch_size=32):
