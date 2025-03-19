@@ -337,62 +337,78 @@ def model_3(stock, df, target_column, num_combination, save_artifacts=False, lea
     return metrics_dict
 
 # Modelo 4
-def model_4(stock, df, target_column, num_combination):
+def model_4(stock, df, target_column, num_combination, save_artifacts=False):
     """
     Treina um modelo de Regressão Linear e retorna as métricas de desempenho.
+    Opcionalmente, salva o modelo treinado e os scalers (scaler_X e scaler_y) na pasta do ativo.
 
     Parâmetros:
+        stock (str): Nome da ação.
         df (pd.DataFrame): DataFrame com os dados.
         target_column (str): Nome da coluna de destino (target).
+        num_combination (int): Identificador da combinação de hiperparâmetros.
+        save_artifacts (bool): Se True, salva o modelo e os scalers. Padrão: False
 
     Retorna:
-        dict: Dicionário com métricas de desempenho (Loss, MSE, RMSE, MAE, MAPE, R²).
+        dict: Dicionário com métricas de desempenho (MSE, RMSE, MAE, MAPE, R²).
     """
+
+    # Criando diretório específico para o ativo dentro de OUTPUT_DIR
+    stock_dir = os.path.join(OUTPUT_DIR, stock)
+    os.makedirs(stock_dir, exist_ok=True)
+
     # Verificando se o target_column existe no DataFrame
     if target_column not in df.columns:
         raise ValueError(f"A coluna '{target_column}' não existe no DataFrame.")
-    
+
     # Separando as variáveis independentes (X) e dependente (y)
     X = df.drop(columns=[target_column]).values
-    y = df[target_column].values
+    y = df[target_column].values.reshape(-1, 1) #Reshape para scaler funcionar corretamente
 
     # Verificando se o DataFrame tem dados suficientes
     if len(X) == 0 or len(y) == 0:
         raise ValueError("O DataFrame está vazio. Não é possível treinar o modelo.")
-    
+
     # Dividindo os dados em 80% para treino e 20% para teste
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=False)
 
     # Escalonando os dados (MinMaxScaler)
-    scaler = MinMaxScaler(feature_range=(0, 1))
-    X_train_scaled = scaler.fit_transform(X_train)
-    X_test_scaled = scaler.transform(X_test)
+    scaler_X = MinMaxScaler(feature_range=(0, 1))
+    X_train_scaled = scaler_X.fit_transform(X_train)
+    X_test_scaled = scaler_X.transform(X_test)
+
+    scaler_y = MinMaxScaler(feature_range=(0, 1))
+    y_train_scaled = scaler_y.fit_transform(y_train)
+    y_test_scaled = scaler_y.transform(y_test)
 
     # Criando o modelo de regressão linear
     model = LinearRegression()
 
     # Treinando o modelo
-    model.fit(X_train_scaled, y_train)
+    model.fit(X_train_scaled, y_train_scaled)
 
-    # Salvando o modelo treinado
-    joblib.dump(model, f"{OUTPUT_DIR}/{stock}_model_4_comb_{num_combination}.pkl")
-
-    # Salvando o scaler
-    joblib.dump(scaler, f"{OUTPUT_DIR}/{stock}_model_4_comb_{num_combination}_scaler.pkl")
+    if save_artifacts:
+        # Salvando o modelo treinado
+        model_path = os.path.join(stock_dir, f"model_4_comb_{num_combination}.pkl")
+        joblib.dump(model, model_path)
+        # Salvando os scalers
+        joblib.dump(scaler_X, os.path.join(stock_dir, f"model_4_comb_{num_combination}_scaler_X.pkl"))
+        joblib.dump(scaler_y, os.path.join(stock_dir, f"model_4_comb_{num_combination}_scaler_y.pkl"))
 
     # Previsão no conjunto de teste
-    y_pred = model.predict(X_test)
+    y_pred_scaled = model.predict(X_test_scaled)
+    y_pred = scaler_y.inverse_transform(y_pred_scaled).flatten()
 
     # Cálculo de métricas
     mse = mean_squared_error(y_test, y_pred)
     rmse = np.sqrt(mse)
     mae = mean_absolute_error(y_test, y_pred)
-    
+
     # Cálculo do MAPE, com verificação para evitar divisão por zero
     mape = np.mean(np.abs((y_test - y_pred) / (y_test + np.finfo(float).eps))) * 100
-    
+
     r2 = r2_score(y_test, y_pred)
-    
+
     # Dicionário de métricas
     metrics_dict = {
         "MSE": mse,
