@@ -120,13 +120,15 @@ def model_1(stock, df, target_column, num_combination, learning_rate=0.001, epoc
     return metrics_dict
 
 # Modelo 2 - LSTM com múltiplas camadas e Dropout
-def model_2(stock, df, target_column, num_combination, learning_rate=0.001, dropout_rate=0.03, epochs=50, batch_size=32):
+def model_2(stock, df, target_column, num_combination, learning_rate=0.001, dropout_rate=0.03, epochs=50, batch_size=32, save_artifacts=False):
     """
-    Treina um modelo LSTM com múltiplas camadas e Dropout e retorna as métricas de desempenho.
+    Treina um modelo LSTM com múltiplas camadas e Dropout e salva o modelo treinado, scaler_X e scaler_y na pasta do ativo.
 
     Parâmetros:
+        stock (str): Nome da ação.
         df (pd.DataFrame): DataFrame com os dados.
         target_column (str): Nome da coluna de destino (target).
+        num_combination (int): Identificador da combinação de hiperparâmetros.
         learning_rate (float): Taxa de aprendizado do otimizador Adam. Padrão: 0.001
         dropout_rate (float): Taxa de dropout para regularização. Padrão: 0.03
         epochs (int): Número de épocas para treinamento. Padrão: 50
@@ -136,20 +138,25 @@ def model_2(stock, df, target_column, num_combination, learning_rate=0.001, drop
         dict: Dicionário com métricas de desempenho (Loss, MSE, RMSE, MAE, MAPE, R²).
     """
 
-    # Separando as variáveis independentes (X) e dependente (y)
+    # Criando diretório específico para o ativo dentro de OUTPUT_DIR
+    stock_dir = os.path.join(OUTPUT_DIR, stock)
+    os.makedirs(stock_dir, exist_ok=True)
+
+    # Separando variáveis independentes (X) e dependente (y)
     X = df.drop(columns=[target_column]).values
-    y = df[target_column].values
+    y = df[target_column].values.reshape(-1, 1)  # Reshape para scaler funcionar corretamente
 
     # Dividindo os dados em 80% para treino e 20% para teste
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=False)
 
-    # Escalonando os dados
-    scaler = MinMaxScaler(feature_range=(0, 1))
-    X_train_scaled = scaler.fit_transform(X_train)
-    X_test_scaled = scaler.transform(X_test)
+    # Criando e ajustando os scalers
+    scaler_X = MinMaxScaler(feature_range=(0, 1))
+    X_train_scaled = scaler_X.fit_transform(X_train)
+    X_test_scaled = scaler_X.transform(X_test)
 
-    # Salvando o scaler
-    joblib.dump(scaler, f"{OUTPUT_DIR}/{stock}_model_2_comb_{num_combination}_scaler.pkl")
+    scaler_y = MinMaxScaler(feature_range=(0, 1))
+    y_train_scaled = scaler_y.fit_transform(y_train)
+    y_test_scaled = scaler_y.transform(y_test)
 
     # Reshape para LSTM (timesteps=1, features=n_features)
     X_train_scaled = X_train_scaled.reshape((X_train_scaled.shape[0], 1, X_train_scaled.shape[1]))
@@ -175,33 +182,42 @@ def model_2(stock, df, target_column, num_combination, learning_rate=0.001, drop
         metrics=['mse', 'mae', 'mape']
     )
 
-    # Configuração de EarlyStopping
+    # Configuração de EarlyStopping para evitar overfitting
     early_stopping = EarlyStopping(monitor='val_loss', patience=10, restore_best_weights=True)
 
     # Treinamento do modelo
     history = model.fit(
-        X_train_scaled, y_train,
+        X_train_scaled, y_train_scaled,  # Usando `y_train_scaled`
         epochs=epochs,
         batch_size=batch_size,
-        validation_data=(X_test_scaled, y_test),
+        validation_data=(X_test_scaled, y_test_scaled),  # Usando `y_test_scaled`
         callbacks=[early_stopping],
         verbose=1
     )
 
-    # Salvando o modelo treinado
-    save_model(model, f"{OUTPUT_DIR}/{stock}_model_2_comb_{num_combination}.h5")
+    if save_artifacts:
+        # Salvando os scalers na pasta do ativo
+        # Salvando os scalers na pasta do ativo
+        joblib.dump(scaler_X, os.path.join(stock_dir, f"model_2_comb_{num_combination}_scaler_X.pkl"))
+        joblib.dump(scaler_y, os.path.join(stock_dir, f"model_2_comb_{num_combination}_scaler_y.pkl"))
+        # Salvando o modelo treinado na pasta do ativo
+        model_path = os.path.join(stock_dir, f"model_2_comb_{num_combination}.h5")
+        save_model(model, model_path)
 
     # Obtendo a última loss registrada
     loss = history.history['loss'][-1]
 
     # Previsão no conjunto de teste
-    y_pred = model.predict(X_test_scaled).flatten()
+    y_pred_scaled = model.predict(X_test_scaled).flatten()
+
+    # Desnormalizando as previsões
+    y_pred = scaler_y.inverse_transform(y_pred_scaled.reshape(-1, 1)).flatten()
 
     # Cálculo de métricas
     mse = mean_squared_error(y_test, y_pred)
     rmse = np.sqrt(mse)
     mae = mean_absolute_error(y_test, y_pred)
-    mape = np.mean(np.abs((y_test - y_pred) / y_test)) * 100
+    mape = np.mean(np.abs((y_test - y_pred) / (y_test + np.finfo(float).eps))) * 100
     r2 = r2_score(y_test, y_pred)
 
     # Dicionário de métricas
@@ -215,7 +231,6 @@ def model_2(stock, df, target_column, num_combination, learning_rate=0.001, drop
     }
 
     return metrics_dict
-
 # Modelo 3
 def model_3(stock, df, target_column, num_combination, learning_rate=0.001, epochs=50, batch_size=32):
     """
