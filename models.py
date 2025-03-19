@@ -13,9 +13,9 @@ from sklearn.linear_model import LinearRegression
 import utils
 
 # Modelo 1 - LSTM Simples
-def model_1(stock, df, target_column, num_combination, learning_rate=0.001, epochs=50, batch_size=32):
+def model_1(stock, df, target_column, num_combination, learning_rate=0.001, epochs=50, batch_size=32, save_artifacts=False):
     """
-    Treina um modelo LSTM e salva o modelo treinado, scaler_X e scaler_y na pasta do ativo.
+    Treina um modelo LSTM e, opcionalmente, salva o modelo treinado, scaler_X e scaler_y na pasta do ativo.
 
     Parâmetros:
         stock (str): Nome da ação.
@@ -25,6 +25,7 @@ def model_1(stock, df, target_column, num_combination, learning_rate=0.001, epoc
         learning_rate (float): Taxa de aprendizado do otimizador Adam. Padrão: 0.001
         epochs (int): Número de épocas para treinamento. Padrão: 50
         batch_size (int): Tamanho do batch para treinamento. Padrão: 32
+        save_artifacts (bool): Se True, salva o modelo e os scalers. Padrão: True
 
     Retorna:
         dict: Dicionário com métricas de desempenho (Loss, MSE, RMSE, MAE, MAPE, R²).
@@ -49,10 +50,6 @@ def model_1(stock, df, target_column, num_combination, learning_rate=0.001, epoc
     scaler_y = MinMaxScaler(feature_range=(0, 1))
     y_train_scaled = scaler_y.fit_transform(y_train)
     y_test_scaled = scaler_y.transform(y_test)
-
-    # Salvando os scalers na pasta do ativo
-    joblib.dump(scaler_X, os.path.join(stock_dir, f"model_1_comb_{num_combination}_scaler_X.pkl"))
-    joblib.dump(scaler_y, os.path.join(stock_dir, f"model_1_comb_{num_combination}_scaler_y.pkl"))
 
     # Reshape para LSTMs (timesteps=1, features=n_features)
     X_train_scaled = X_train_scaled.reshape((X_train_scaled.shape[0], 1, X_train_scaled.shape[1]))
@@ -86,9 +83,13 @@ def model_1(stock, df, target_column, num_combination, learning_rate=0.001, epoc
         verbose=1
     )
 
-    # Salvando o modelo treinado na pasta do ativo
-    model_path = os.path.join(stock_dir, f"model_1_comb_{num_combination}.h5")
-    save_model(model, model_path)
+    if save_artifacts:
+        # Salvando os scalers na pasta do ativo
+        joblib.dump(scaler_X, os.path.join(stock_dir, f"model_1_comb_{num_combination}_scaler_X.pkl"))
+        joblib.dump(scaler_y, os.path.join(stock_dir, f"model_1_comb_{num_combination}_scaler_y.pkl"))
+        # Salvando o modelo treinado na pasta do ativo
+        model_path = os.path.join(stock_dir, f"model_1_comb_{num_combination}.h5")
+        save_model(model, model_path)
 
     # Obtendo a última loss registrada
     loss = history.history['loss'][-1]

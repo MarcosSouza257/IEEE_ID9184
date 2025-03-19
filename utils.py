@@ -76,7 +76,7 @@ def get_stock_data(stock):
     """
     # Carrega dados do arquivo correto
     df = pd.read_csv(
-        f'{DATA_DIR}/{stock}_textuais_numericos.csv',  # Usa DATA_DIR do config
+        f'{DATA_DIR}\{stock}_textuais_numericos.csv',  # Usa DATA_DIR do config
         encoding='utf-8-sig',
         index_col='date'
     )
