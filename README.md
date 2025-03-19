@@ -8,7 +8,7 @@ Brazilian Stock Market Forecast with Heterogeneous Data Integration for a Set�
 1.  Clone o repositório:
 
     ```bash
-    git clone [https://github.com/MarcosSouza257/IEEE_ID9184.git](https://github.com/MarcosSouza257/IEEE_ID9184.git)
+    git clone (https://github.com/MarcosSouza257/IEEE_ID9184.git)
     ```
 
 2.  Navegue até o diretório do projeto:
