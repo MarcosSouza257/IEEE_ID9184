@@ -13,7 +13,7 @@ from sklearn.linear_model import LinearRegression
 import utils
 
 # Modelo 1 - LSTM Simples
-def model_1(stock, df, target_column, num_combination, learning_rate=0.001, epochs=50, batch_size=32, save_artifacts=False):
+def model_1(stock, df, target_column, num_combination, save_artifacts=False, learning_rate=0.001, epochs=50, batch_size=32):
     """
     Treina um modelo LSTM e, opcionalmente, salva o modelo treinado, scaler_X e scaler_y na pasta do ativo.
 
@@ -120,7 +120,7 @@ def model_1(stock, df, target_column, num_combination, learning_rate=0.001, epoc
     return metrics_dict
 
 # Modelo 2 - LSTM com múltiplas camadas e Dropout
-def model_2(stock, df, target_column, num_combination, learning_rate=0.001, dropout_rate=0.03, epochs=50, batch_size=32, save_artifacts=False):
+def model_2(stock, df, target_column, num_combination, save_artifacts=False, learning_rate=0.001, dropout_rate=0.03, epochs=50, batch_size=32):
     """
     Treina um modelo LSTM com múltiplas camadas e Dropout e salva o modelo treinado, scaler_X e scaler_y na pasta do ativo.
 
@@ -231,6 +231,7 @@ def model_2(stock, df, target_column, num_combination, learning_rate=0.001, drop
     }
 
     return metrics_dict
+
 # Modelo 3
 def model_3(stock, df, target_column, num_combination, learning_rate=0.001, epochs=50, batch_size=32):
     """
