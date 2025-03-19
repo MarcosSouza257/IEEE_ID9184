@@ -480,6 +480,26 @@ def make_predictions(stock, df, model='model_2', num_combination=4, output_dir="
 
     return df_results
 
+def generate_signals(df):
+    """
+    Gera sinais de compra e venda com base na comparação entre 'close' e 'close_predicted'.
+
+    Parâmetros:
+        stock (str): Nome da ação para referência.
+        df (pd.DataFrame): DataFrame contendo as colunas 'close' e 'close_predicted'.
+
+    Retorna:
+        pd.DataFrame: DataFrame atualizado com a coluna 'signal'.
+    """
+    # Garantindo que a coluna 'signal' seja criada corretamente
+    df["signal"] = 0  
+
+    # Aplicando as regras para gerar sinais
+    df.loc[df["close"] < df["close_predicted"], "signal"] = 1   # Sinal de compra
+    df.loc[df["close"] > df["close_predicted"], "signal"] = -1  # Sinal de venda
+
+    return df
+
 
 
 
