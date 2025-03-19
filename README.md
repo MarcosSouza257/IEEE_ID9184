@@ -8,16 +8,28 @@ Brazilian Stock Market Forecast with Heterogeneous Data Integration for a Set�
 1.  Clone o repositório:
 
     ```bash
-    git clone [https://github.com/dolthub/dolt](https://github.com/dolthub/dolt)
+    git clone [https://github.com/MarcosSouza257/IEEE_ID9184.git](https://github.com/MarcosSouza257/IEEE_ID9184.git)
     ```
 
 2.  Navegue até o diretório do projeto:
 
     ```bash
-    cd nome-do-projeto
+    cd IEEE_ID9184
+    ```
+3. Crie um ambiente virtual (opcional, mas recomendado):
+
+    ```bash
+    python -m venv venv
+    source venv/bin/activate  # No Windows: venv\Scripts\activate
     ```
 
-3.  Instale as dependências:
+
+4.  Instale as dependências:
 
     ```bash
     pip install -r requirements.txt
+
+
+## Como Usar 
+
+
