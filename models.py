@@ -75,7 +75,7 @@ def model_1(stock, df, target_column, num_combination, learning_rate=0.001, epoc
         verbose=1
     )
     # Salvando o modelo treinado
-    save_model(model, f"{OUTPUT_DIR}{stock}_model_1_comb_{num_combination}.h5")
+    save_model(model, f"{OUTPUT_DIR}/{stock}_model_1_comb_{num_combination}.h5")
 
     # Obtendo a última loss registrada
     loss = history.history['loss'][-1]
@@ -132,7 +132,7 @@ def model_2(stock, df, target_column, num_combination, learning_rate=0.001, drop
     X_test_scaled = scaler.transform(X_test)
 
     # Salvando o scaler
-    joblib.dump(scaler, f"{OUTPUT_DIR}{stock}_model_2_comb_{num_combination}_scaler.pkl")
+    joblib.dump(scaler, f"{OUTPUT_DIR}/{stock}_model_2_comb_{num_combination}_scaler.pkl")
 
     # Reshape para LSTM (timesteps=1, features=n_features)
     X_train_scaled = X_train_scaled.reshape((X_train_scaled.shape[0], 1, X_train_scaled.shape[1]))
@@ -172,7 +172,7 @@ def model_2(stock, df, target_column, num_combination, learning_rate=0.001, drop
     )
 
     # Salvando o modelo treinado
-    save_model(model, f"{OUTPUT_DIR}{stock}_model_2_comb_{num_combination}.h5")
+    save_model(model, f"{OUTPUT_DIR}/{stock}_model_2_comb_{num_combination}.h5")
 
     # Obtendo a última loss registrada
     loss = history.history['loss'][-1]
@@ -228,7 +228,7 @@ def model_3(stock, df, target_column, num_combination, learning_rate=0.001, epoc
     X_test_scaled = scaler.transform(X_test)
 
     # Salvando o scaler
-    joblib.dump(scaler, f"{OUTPUT_DIR}{stock}_model_3_comb_{num_combination}_scaler.pkl")
+    joblib.dump(scaler, f"{OUTPUT_DIR}/{stock}_model_3_comb_{num_combination}_scaler.pkl")
 
     # Criando o modelo MLP
     model = Sequential([
@@ -259,7 +259,7 @@ def model_3(stock, df, target_column, num_combination, learning_rate=0.001, epoc
         verbose=1
     )
     # Salvando o modelo treinado
-    save_model(model, f"{OUTPUT_DIR}{stock}_model_3_comb_{num_combination}.h5")
+    save_model(model, f"{OUTPUT_DIR}/{stock}_model_3_comb_{num_combination}.h5")
 
     # Obtendo a última loss registrada
     loss = history.history['loss'][-1]
@@ -325,10 +325,10 @@ def model_4(stock, df, target_column, num_combination):
     model.fit(X_train_scaled, y_train)
 
     # Salvando o modelo treinado
-    joblib.dump(model, f"{OUTPUT_DIR}{stock}_model_4_comb_{num_combination}.pkl")
+    joblib.dump(model, f"{OUTPUT_DIR}/{stock}_model_4_comb_{num_combination}.pkl")
 
     # Salvando o scaler
-    joblib.dump(scaler, f"{OUTPUT_DIR}{stock}_model_4_comb_{num_combination}_scaler.pkl")
+    joblib.dump(scaler, f"{OUTPUT_DIR}/{stock}_model_4_comb_{num_combination}_scaler.pkl")
 
     # Previsão no conjunto de teste
     y_pred = model.predict(X_test)
