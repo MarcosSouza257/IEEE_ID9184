@@ -90,7 +90,7 @@ def model_1(stock, df, target_column, num_combination, save_artifacts=False, lea
         joblib.dump(scaler_y, os.path.join(stock_dir, f"model_1_comb_{num_combination}_scaler_y.pkl"))
         # Salvando o modelo treinado na pasta do ativo
         model_path = os.path.join(stock_dir, f"model_1_comb_{num_combination}.h5")
-        save_model(model, model_path)
+        save_model(model, model_path, include_optimizer=True)
 
     # Obtendo a última loss registrada
     loss = history.history['loss'][-1]
@@ -203,7 +203,7 @@ def model_2(stock, df, target_column, num_combination, save_artifacts=False, lea
         joblib.dump(scaler_y, os.path.join(stock_dir, f"model_2_comb_{num_combination}_scaler_y.pkl"))
         # Salvando o modelo treinado na pasta do ativo
         model_path = os.path.join(stock_dir, f"model_2_comb_{num_combination}.h5")
-        save_model(model, model_path)
+        save_model(model, model_path, include_optimizer=True)
 
     # Obtendo a última loss registrada
     loss = history.history['loss'][-1]
@@ -308,7 +308,7 @@ def model_3(stock, df, target_column, num_combination, save_artifacts=False, lea
         joblib.dump(scaler_y, os.path.join(stock_dir, f"model_3_comb_{num_combination}_scaler_y.pkl"))
         # Salvando o modelo treinado
         model_path = os.path.join(stock_dir, f"model_3_comb_{num_combination}.h5")
-        save_model(model, model_path)
+        save_model(model, model_path, include_optimizer=True)
 
     # Obtendo a última loss registrada
     loss = history.history['loss'][-1]
