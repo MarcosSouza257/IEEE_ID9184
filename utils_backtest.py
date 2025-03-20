@@ -229,3 +229,42 @@ def process_stocks(stock_list, all_stock_data):
         print(f'{stock} processado!')
 
     return results, signals
+
+def calculate_final_results(results, signals, initial_money=10000):
+    """
+    Calcula o resultado final para cada ativo e retorna um DataFrame com os resultados,
+    formatando os valores em R$ com duas casas decimais e adicionando a coluna de ganho real.
+
+    Parâmetros:
+        results (dict): Dicionário contendo os DataFrames de curva de capital de cada ativo.
+        signals (dict): Dicionário contendo os DataFrames de sinais de cada ativo.
+        initial_money (float): Quantia inicial em dinheiro para o investimento de comparação. Padrão: 10.000.
+
+    Retorna:
+        pd.DataFrame: DataFrame com os resultados finais para cada ativo.
+    """
+
+    final_results = []
+
+    for stock, capital_df in results.items():
+        if stock in signals:
+            signals_df = signals[stock]
+            final_capital = capital_df['capital'].iloc[-1]  # Valor final da curva de capital
+
+            # Calculando o valor final do investimento inicial no ativo (buy and hold)
+            initial_investment = initial_money * (signals_df['close'].iloc[-1] / signals_df['close'].iloc[0])
+
+            retorno_estrategia = ((final_capital - initial_money) / initial_money) * 100
+            retorno_buy_hold = ((initial_investment - initial_money) / initial_money) * 100
+
+            final_results.append({
+                'Ativo': stock,
+                'Estratégia (Modelo 2) (R$)': f'R$ {final_capital:.2f}',
+                'Buy & Hold (R$)': f'R$ {initial_investment:.2f}',
+                'Retorno Estratégia (%)': f'{retorno_estrategia:.2f}%',
+                'Retorno Buy & Hold (%)': f'{retorno_buy_hold:.2f}%',
+            })
+        else:
+            print(f"Ativo '{stock}' não encontrado em signals.")
+
+    return pd.DataFrame(final_results)
