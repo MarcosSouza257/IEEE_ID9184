@@ -500,6 +500,108 @@ def generate_signals(df):
 
     return df
 
+def run_backtest(signals_df, initial_money=10000):
+    """
+    Executa um backtest com base nos sinais de compra, mantendo posições enquanto os sinais forem de compra.
+    As operações são executadas no preço de abertura do próximo dia.
+    Retorna o resultado final e um DataFrame com a curva de capital, usando o índice do DataFrame como data.
+
+    Parâmetros:
+        signals_df (pd.DataFrame): DataFrame contendo as colunas 'signal', 'close' e 'open', com um índice de data.
+        initial_money (float): Quantia inicial em dinheiro para o backtest. Padrão: 10.000.
+
+    Retorna:
+        tuple: Uma tupla contendo o valor final do portfólio e um DataFrame com a curva de capital.
+    """
+    # Verificando se as colunas necessárias estão no DataFrame
+    required_columns = {'signal', 'close', 'open'}
+    if not required_columns.issubset(signals_df.columns):
+        raise ValueError(f"O DataFrame precisa conter as colunas {required_columns}")
+
+    money = initial_money
+    stock = 0  # Quantidade de ações compradas
+    position = 0  # 1 para comprado, 0 para neutro
+    
+    capital_curve = {'date': [], 'capital': []}  # Dicionário para armazenar a evolução do capital
+
+    try:
+        for i, (date, row) in enumerate(signals_df.iterrows()):  # Iterando sobre o índice e as linhas
+            if len(capital_curve['capital']) == 0:
+                capital_curve['capital'].append(money)
+                capital_curve['date'].append(date)
+
+            if row['signal'] == 1 and position != 1:  # Se o sinal for de compra e não estiver comprado
+                if position == 0:  # Se estiver neutro, compra
+                    if i < len(signals_df):
+                        stock = money / signals_df['open'].iloc[i+1]  # Compra no preço de abertura
+                        money = 0
+                position = 1  # Define posição como comprada
+
+            elif row['signal'] != 1 and position == 1: # Se o sinal não for de compra e estiver comprado, vende tudo.
+                if i < len(signals_df):
+                    money += stock * signals_df['open'].iloc[i+1]  # Vende no preço de abertura
+                    stock = 0
+                position = 0 # define posição como neutro
+
+            # Atualiza a curva de capital com o valor atual do portfólio
+            if position == 1:
+                capital_curve['capital'].append(stock * signals_df['close'].iloc[i]) # calcula capital com o fechamento do dia
+            else:
+                capital_curve['capital'].append(money)
+
+            capital_curve['date'].append(date)  # Usando o índice como data
+
+        # Se ainda houver ações no final, realiza a última venda
+        if position == 1:  # Se estiver comprado, vende tudo
+            money += stock * signals_df['open'].iloc[+1] # Vende no preço de abertura
+
+        capital_df = pd.DataFrame(capital_curve)
+        capital_df.set_index('date', inplace=True) # define a coluna data como index
+
+        return money, capital_df
+    except Exception as e:
+        print(f"Erro no backtest: {e}")
+
+
+def plot_backtest_comparison(capital_df, signals_df, initial_money=10000):
+    """
+    Plota a curva de capital do backtest e a evolução de um investimento inicial no ativo, usando Plotly.
+
+    Parâmetros:
+        capital_df (pd.DataFrame): DataFrame com a curva de capital do backtest, com índice de data.
+        signals_df (pd.DataFrame): DataFrame com os preços de fechamento, com índice de data.
+        initial_money (float): Quantia inicial em dinheiro para o investimento de comparação. Padrão: 10.000.
+    """
+
+    # Criando o gráfico de linhas para a curva de capital do backtest
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=capital_df.index, y=capital_df['capital'], mode='lines', name='Curva de Capital (Estratégia)'))
+
+    # Calculando a evolução do investimento inicial no ativo
+    initial_investment = [initial_money]
+    for i in range(1, len(signals_df)):
+        initial_investment.append(initial_money * (signals_df['close'].iloc[i] / signals_df['close'].iloc[0]))
+
+    # Adicionando o gráfico de linhas para a evolução do investimento inicial
+    fig.add_trace(go.Scatter(x=signals_df.index, y=initial_investment, mode='lines', name='Investimento no Ativo (Buy & Hold)'))
+
+    # Atualizando o layout do gráfico
+    fig.update_layout(
+        title='Estratégia com Previsão do Modelo 2 vs. Investimento Direto no Ativo',
+        xaxis_title='Data',
+        yaxis_title='Valor',
+        legend=dict(
+            orientation="h",  # Orientação horizontal da legenda
+            yanchor="top",  # Ancoragem vertical da legenda no topo
+            y=0.98,  # Posição vertical da legenda (ajuste conforme necessário)
+            xanchor="right",  # Ancoragem horizontal da legenda na parte direita
+            x=0.98  # Posição horizontal da legenda (ajuste conforme necessário)
+        ),
+        hovermode='x unified'  # Mostra os valores de ambos os gráficos ao passar o mouse
+    )
+
+    fig.show()
+
 
 
 
