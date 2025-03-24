@@ -163,7 +163,7 @@ def make_combination_data(df, num_combination):
         4: ("Stock Data + IT (IFR + MMS + MME)", stock_data + ifr + mms + mme),
         5: ("Google News + Twitter + IFR + MMS", close + google_news + twitter + ifr + mms),
         6: ("Google News + Twitter + IFR + MME", close + google_news + twitter + ifr + mme),
-        7: ("Google News + Twitter + IFR + MME + MMS", close + google_news + twitter + ifr + mme + mms),
+        7: ("Google News + Twitter + IFR + MME + MMS", close + google_news + twitter + ifr + mme + mms)
     }
 
     # Verifica se a combinação existe

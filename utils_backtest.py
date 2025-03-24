@@ -197,31 +197,36 @@ def plot_all_results(results, signals):
         else:
             print(f"Ativo '{stock}' não encontrado em signals.")
 
-def process_stocks(stock_list, all_stock_data):
+
+def process_stocks(stock_list, all_stock_data, model, num_combination):
     """
     Processa uma lista de ativos, realizando previsões, gerando sinais de negociação e executando backtests.
-    Retorna um dicionário contendo a curva de capital de cada ativo.
+    Retorna um dicionário contendo a curva de capital de cada ativo e os sinais de negociação.
 
     Parâmetros:
         stock_list (list): Lista de nomes dos ativos.
         all_stock_data (dict): Dicionário contendo os DataFrames de dados de cada ativo.
+        model: Modelo de previsão a ser utilizado.
+        num_combination (int): Número da combinação para condições específicas.
 
     Retorna:
-        dict: Dicionário contendo a curva de capital de cada ativo.
+        tuple: Uma tupla contendo dicionários com a curva de capital e os sinais de negociação de cada ativo.
     """
 
     results = {}  # Dicionário para armazenar os resultados
-    signals = {}  # Dicionário para armazenar os resultados
+    signals = {}  # Dicionário para armazenar os sinais de negociação
 
     # Predições em todos ativos
     for stock in stock_list:
         print(f'Processando {stock}...')
         # Fazer as predições com os ultimos 20% dos dados ( dados de teste)
-        df = make_predictions(stock, all_stock_data[stock])
-        # Gerar sinais de de negociação
+        df = make_predictions(stock, all_stock_data[stock], model, num_combination)
+        # Gerar sinais de negociação
         signals_df = generate_signals(df)
         # Armazenar os sinais no dicionário
         signals[stock] = signals_df
+        if num_combination == 5 or num_combination == 6 or num_combination == 7:
+            signals_df['open'] = all_stock_data[stock]['open']
         # Executar o backtest
         _, capital_df = run_backtest(signals_df) # ignora o valor final do capital
         # Armazenar a curva de capital no dicionário
