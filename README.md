@@ -78,6 +78,7 @@ s.
      2. Pule para a seção **"3. Processar o Backtest com Modelo Salvo"**.  
      3. Execute as células dessa seção para visualizar **4 gráficos**, cada um representando o desempenho da estratégia para as ações estudadas (`PETR4`, `VALE3`, `BBDC4` e `ITUB4`). Os gráficos comparam a estratégia com o retorno real de cada ação. 
 ![alt text](output/BBDC4_backtest_model_2_comb_5.png)
+Gráfico comparativo entre a performance da estratégia (Modelo 2 - Combinação 5) e o retorno da ação BBDC4 no período de teste (20% dos dados).
 3. **📈 Comparação de Resultados**  
 
    - Ao executar a última célula, será exibida uma **tabela comparativa** mostrando o resultado final acumulado.  
@@ -88,7 +89,7 @@ s.
    - Com isso, você poderá comparar se a estratégia foi capaz de superar o retorno do investimento direto na ação.
 
    ![alt text](output/model_2_comb_5_table_result.png) 
-   * Obs.: **Modelo 2** com a combinação de dados **5. - Google News + Twitter + IFR + MMS**, sem considerar o custo operações.
+Obs.: Teste realizado com o Modelo 2 utilizando a combinação de dados 5 (Google News + Twitter + IFR + MMS), sem incluir os custos operacionais.
 
 
 
