@@ -84,7 +84,10 @@ s.
    - A tabela apresentará dois cenários:  
      - O **desempenho da estratégia aplicada** ao longo do período de teste.  
      - O **resultado de um investimento passivo**, onde os R$ 10 mil seriam investidos diretamente na ação.  
-   - Com isso, você poderá comparar se a estratégia foi capaz de superar o retorno do investimento direto na ação.  
+   - Com isso, você poderá comparar se a estratégia foi capaz de superar o retorno do investimento direto na ação.
+
+   ![alt text](image.png) 
+   * Obs.: **Modelo 2** com a combinação 5. **Google News + Twitter + IFR + MMS**, sem considerar o custo operações.
 
 
 
