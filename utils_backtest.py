@@ -140,33 +140,51 @@ def run_backtest(signals_df, initial_money=10000):
     except Exception as e:
         print(f"Erro no backtest: {e}")
 
-def plot_backtest_comparison(stock, capital_df, signals_df, initial_money=10000):
+def plot_backtest_comparison(stock, capital_df, signals_df, model, num_combination, initial_money=10000):
     """
     Plota a curva de capital do backtest e a evolução de um investimento inicial no ativo, usando Plotly.
+    Salva o gráfico como um arquivo PNG no diretório de saída.
 
     Parâmetros:
         stock (str): Nome do ativo.
         capital_df (pd.DataFrame): DataFrame com a curva de capital do backtest, com índice de data.
         signals_df (pd.DataFrame): DataFrame com os preços de fechamento, com índice de data.
+        model (str): Nome do modelo utilizado.
+        num_combination (int): Número da combinação utilizada.
         initial_money (float): Quantia inicial em dinheiro para o investimento de comparação. Padrão: 10.000.
     """
+    # Verifica se os DataFrames têm índices de data
+    #if not isinstance(capital_df.index, pd.DatetimeIndex) or not isinstance(signals_df.index, pd.DatetimeIndex):
+     #   raise ValueError("Os DataFrames `capital_df` e `signals_df` devem ter índices de data.")
 
     # Criando o gráfico de linhas para a curva de capital do backtest
     fig = go.Figure()
-    fig.add_trace(go.Scatter(x=capital_df.index, y=capital_df['capital'], mode='lines', name='Strategy with Model 2'))
+    fig.add_trace(
+        go.Scatter(
+            x=capital_df.index,
+            y=capital_df['capital'],
+            mode='lines',
+            name=f'Strategy with {model}'
+        )
+    )
 
-    # Calculando a evolução do investimento inicial no ativo
-    initial_investment = [initial_money]
-    for i in range(1, len(signals_df)):
-        initial_investment.append(initial_money * (signals_df['close'].iloc[i] / signals_df['close'].iloc[0]))
+    # Calculando a evolução do investimento inicial no ativo (Buy & Hold)
+    initial_investment = initial_money * (signals_df['close'] / signals_df['close'].iloc[0])
 
     # Adicionando o gráfico de linhas para a evolução do investimento inicial
-    fig.add_trace(go.Scatter(x=signals_df.index, y=initial_investment, mode='lines', name='Buy & Hold'))
+    fig.add_trace(
+        go.Scatter(
+            x=signals_df.index,
+            y=initial_investment,
+            mode='lines',
+            name='Buy & Hold'
+        )
+    )
 
     # Atualizando o layout do gráfico
     fig.update_layout(
-        title=f'{stock} - Strategy with Model 2 vs. Buy and Hold Strategy',
-        title_x=0.5,  # 
+        title=f'{stock} - Strategy with {model} vs. Buy and Hold Strategy',
+        title_x=0.5,  # Centraliza o título
         xaxis_title='Data',
         yaxis_title='Valor',
         legend=dict(
@@ -178,10 +196,9 @@ def plot_backtest_comparison(stock, capital_df, signals_df, initial_money=10000)
         ),
         hovermode='x unified'
     )
-
     fig.show()
-
-def plot_all_results(results, signals):
+    
+def plot_all_results(results, signals, name_model, num_combination):
     """
     Plota os resultados de todos os ativos usando a função plot_backtest_comparison.
 
@@ -193,7 +210,7 @@ def plot_all_results(results, signals):
     for stock, capital_df in results.items():
         if stock in signals:
             signals_df = signals[stock] # Obtém os sinais do ativo
-            plot_backtest_comparison(stock, capital_df, signals_df)
+            plot_backtest_comparison(stock, capital_df, signals_df, name_model, num_combination)
         else:
             print(f"Ativo '{stock}' não encontrado em signals.")
 

@@ -19,6 +19,7 @@ from sklearn.metrics import mean_squared_error, accuracy_score, r2_score, mean_a
 from sklearn.linear_model import LinearRegression
 import utils
 from tensorflow.keras.models import load_model
+import tensorflow as tf
 
 
 def calcular_mms(df, periodo):

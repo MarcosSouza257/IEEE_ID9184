@@ -1,6 +1,12 @@
 from utils import *
 from config import *
 
+
+def set_seed(seed=42):
+    random.seed(seed)
+    np.random.seed(seed)
+    tf.random.set_seed(seed)
+
 # Modelo 1 - LSTM Simples
 def model_1(stock, df, target_column, num_combination, save_artifacts=False, learning_rate=0.001, epochs=50, batch_size=32):
     """
@@ -20,6 +26,8 @@ def model_1(stock, df, target_column, num_combination, save_artifacts=False, lea
     Retorna:
         dict: Dicionário com métricas de desempenho (Loss, MSE, RMSE, MAE, MAPE, R²).
     """
+    # Definir semente para reprodutibilidade
+    set_seed()
 
     # Criando diretório específico para o ativo dentro de OUTPUT_DIR
     stock_dir = os.path.join(OUTPUT_DIR, stock)
@@ -128,6 +136,8 @@ def model_2(stock, df, target_column, num_combination, save_artifacts=False, lea
     Retorna:
         dict: Dicionário com métricas de desempenho (Loss, MSE, RMSE, MAE, MAPE, R²).
     """
+    # Definir semente para reprodutibilidade
+    set_seed()
 
     # Criando diretório específico para o ativo dentro de OUTPUT_DIR
     stock_dir = os.path.join(OUTPUT_DIR, stock)
@@ -241,6 +251,8 @@ def model_3(stock, df, target_column, num_combination, save_artifacts=False, lea
     Retorna:
         dict: Dicionário com métricas de desempenho (Loss, MSE, RMSE, MAE, MAPE, R²).
     """
+    # Definir semente para reprodutibilidade
+    set_seed()
 
     # Criando diretório específico para o ativo dentro de OUTPUT_DIR
     stock_dir = os.path.join(OUTPUT_DIR, stock)
