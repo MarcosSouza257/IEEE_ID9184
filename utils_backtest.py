@@ -210,12 +210,12 @@ def plot_all_results(results, signals, name_model, num_combination):
     for stock, capital_df in results.items():
         if stock in signals:
             signals_df = signals[stock] # Obtém os sinais do ativo
-            plot_backtest_comparison(stock, capital_df, signals_df, name_model, num_combination)
+            plot_backtest_comparison(stock, capital_df, signals_df, name_model.__name__, num_combination)
         else:
             print(f"Ativo '{stock}' não encontrado em signals.")
 
 
-def process_stocks(stock_list, all_stock_data, model, num_combination):
+def process_stocks(stock_list, all_stock_data, name_model, num_combination):
     """
     Processa uma lista de ativos, realizando previsões, gerando sinais de negociação e executando backtests.
     Retorna um dicionário contendo a curva de capital de cada ativo e os sinais de negociação.
@@ -237,7 +237,7 @@ def process_stocks(stock_list, all_stock_data, model, num_combination):
     for stock in stock_list:
         print(f'Processando {stock}...')
         # Fazer as predições com os ultimos 20% dos dados ( dados de teste)
-        df = make_predictions(stock, all_stock_data[stock], model, num_combination)
+        df = make_predictions(stock, all_stock_data[stock], name_model.__name__, num_combination)
         # Gerar sinais de negociação
         signals_df = generate_signals(df)
         # Armazenar os sinais no dicionário
