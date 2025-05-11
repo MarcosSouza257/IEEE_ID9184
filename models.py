@@ -105,6 +105,12 @@ def model_1(stock, df, target_column, num_combination, save_artifacts=False, lea
     mape = np.mean(np.abs((y_test - y_pred) / (y_test + np.finfo(float).eps))) * 100
     r2 = r2_score(y_test, y_pred)
 
+    # Cálculo do MASE
+    naive_forecast = y_test.shift(1)  # ou y_train[-1] se for previsão fora da amostra
+    naive_errors = np.abs(y_test[1:] - naive_forecast[1:])
+    mase_denom = np.mean(naive_errors)
+    mase = mae / (mase_denom + np.finfo(float).eps)
+
     # Dicionário de métricas
     metrics_dict = {
         "Loss": loss,
@@ -113,6 +119,7 @@ def model_1(stock, df, target_column, num_combination, save_artifacts=False, lea
         "MAE": mae,
         "MAPE": mape,
         "R²": r2,
+        "MASE": mase,
     }
 
     return metrics_dict
