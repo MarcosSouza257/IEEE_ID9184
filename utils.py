@@ -330,6 +330,56 @@ def plot_rmse_facet_plotly(df):
     return fig
 
 
+def plot_rmse_line_plotly(df, stock_name, model_name=None):
+    """
+    Plota um gráfico de linhas interativo mostrando o RMSE para cada Description,
+    filtrando por ação e, opcionalmente, por modelo selecionado.
+
+    Parâmetros:
+        df (pd.DataFrame): DataFrame contendo as métricas de desempenho.
+        stock_name (str): Nome da ação para filtrar os dados.
+        model_name (str, opcional): Nome do modelo para filtrar os dados.
+    """
+
+    # Filtrar os dados com base na ação fornecida
+    filtered_df = df[df["Stock"] == stock_name]
+
+    # Se um modelo específico não for fornecido, plotar para todos os modelos
+    if model_name is None:
+        fig = px.line(
+            filtered_df,
+            x="Description",
+            y="RMSE",
+            color="Model",  # Adiciona uma cor para cada modelo
+            title=f"RMSE por Combinações para {stock_name}",
+            labels={"Description": "Description", "RMSE": "RMSE"},
+            height=500,
+            width=800,
+            markers=True
+        )
+    else:
+        # Filtrar os dados com base no modelo fornecido
+        filtered_df = filtered_df[filtered_df["Model"] == model_name]
+
+        fig = px.line(
+            filtered_df,
+            x="Description",
+            y="RMSE",
+            title=f"RMSE por Combinações para {stock_name}",
+            labels={"Description": "Description", "RMSE": "RMSE"},
+            height=500,
+            width=800,
+            markers=True
+        )
+
+    fig.update_layout(
+        margin=dict(l=20, r=20, t=40, b=20),
+        font=dict(size=10),
+        title_x=0.5
+    )
+
+    return fig
+
 def process_stocks_and_save_metrics(all_stock_data, num_combination, name_model, save_artifacts=False):
     """
     Processa uma lista de ações, treina o modelo para cada uma e salva as métricas em um DataFrame.
