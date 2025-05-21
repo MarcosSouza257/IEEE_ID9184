@@ -94,6 +94,7 @@ def model_1(stock, df, target_column, num_combination, save_artifacts=False, lea
 
     # Previsão no conjunto de teste
     y_pred_scaled = model.predict(X_test_scaled).flatten()
+    #y_pred = model.predict(X_test_scaled).flatten()
 
     # Desnormalizando as previsões
     y_pred = scaler_y.inverse_transform(y_pred_scaled.reshape(-1, 1)).flatten()
@@ -102,16 +103,11 @@ def model_1(stock, df, target_column, num_combination, save_artifacts=False, lea
     mse = mean_squared_error(y_test, y_pred)
     rmse = np.sqrt(mse)
     mae = mean_absolute_error(y_test, y_pred)
-    mape = np.mean(np.abs((y_test - y_pred) / (y_test + np.finfo(float).eps))) * 100
+    # Cálculo do MAPE com proteção contra divisão por zero
+    mape = np.mean(np.abs((y_test.flatten() - y_pred) / (np.maximum(np.abs(y_test.flatten()), np.finfo(float).eps)))) * 100
     r2 = r2_score(y_test, y_pred)
 
-    # Cálculo do MASE
-    naive_forecast = y_test.shift(1)  # ou y_train[-1] se for previsão fora da amostra
-    naive_errors = np.abs(y_test[1:] - naive_forecast[1:])
-    mase_denom = np.mean(naive_errors)
-    mase = mae / (mase_denom + np.finfo(float).eps)
-
-    # Dicionário de métricas
+    # Monta dicionário de métricas
     metrics_dict = {
         "Loss": loss,
         "MSE": mse,
@@ -119,7 +115,6 @@ def model_1(stock, df, target_column, num_combination, save_artifacts=False, lea
         "MAE": mae,
         "MAPE": mape,
         "R²": r2,
-        "MASE": mase,
     }
 
     return metrics_dict
@@ -224,7 +219,8 @@ def model_2(stock, df, target_column, num_combination, save_artifacts=False, lea
     mse = mean_squared_error(y_test, y_pred)
     rmse = np.sqrt(mse)
     mae = mean_absolute_error(y_test, y_pred)
-    mape = np.mean(np.abs((y_test - y_pred) / (y_test + np.finfo(float).eps))) * 100
+    mape = np.mean(np.abs((y_test.flatten() - y_pred) / 
+            (np.maximum(np.abs(y_test.flatten()), np.finfo(float).eps)))) * 100
     r2 = r2_score(y_test, y_pred)
 
     # Dicionário de métricas
@@ -317,6 +313,7 @@ def model_3(stock, df, target_column, num_combination, save_artifacts=False, lea
         # Salvando o modelo treinado
         model_path = os.path.join(stock_dir, f"model_3_comb_{num_combination}.h5")
         save_model(model, model_path, include_optimizer=True)
+
 
     # Obtendo a última loss registrada
     loss = history.history['loss'][-1]

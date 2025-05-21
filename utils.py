@@ -88,14 +88,15 @@ def get_stock_data(stock):
     Retorna:
         tuple: DataFrame com os dados e nome da coluna target
     """
-    # Carrega dados do arquivo correto
+    # Carrega dados do arquivo CSV
     df = pd.read_csv(
         f'{DATA_DIR}\{stock}_textuais_numericos.csv',  # Usa DATA_DIR do config
+        #f'{DATA_DIR}\{stock}.csv',  # Usa DATA_DIR do config
         encoding='utf-8-sig',
         index_col='date'
     )
     
-    # Cálculo de indicadores (mantive seu código original)
+    # Cálculo de indicadores
     df = calcular_mms(df, 30)
     df = calcular_mms(df, 5)
     df = calcular_mme(df, 5)
@@ -276,7 +277,8 @@ def plot_rmse_facet_plotly_normal(df):
 
     return fig
 
-def plot_rmse_facet_plotly(df):
+
+def plot_rmse_facet_plotly(df): 
     """
     Plota um gráfico de linhas interativo RMSE vs Stock para todas as combinações de variáveis
 
@@ -290,89 +292,43 @@ def plot_rmse_facet_plotly(df):
         y="RMSE",
         color="Description",
         facet_col="Model",
-        #title="RMSE X Stock",
-        labels={"Stock": "Stock", "RMSE": "RMSE", "Description": "Descrição"},
-        height=600,  # Ajusta a altura do gráfico
-        width=1400  # Ajusta a largura do gráfico
+        facet_col_wrap=2,  # Exibe 2 gráficos por linha
+        labels={"Stock": "Stock", "RMSE": "RMSE", "Description": "Description"},
+        height=600,
+        width=600
     )
 
-    fig.update_traces(mode="lines+markers")  # Adiciona linhas e marcadores
-
-    fig.update_layout(
-        margin=dict(l=20, r=20, t=40, b=60),  # Ajusta as margens do gráfico
-        font=dict(size=10),  # Ajusta o tamanho da fonte geral
-        title_x=0.5,  # Centraliza o título
-        legend=dict(
-            yanchor="top",  # Posição vertical da legenda
-            y=-0.2,  # Ajusta o deslocamento vertical da legenda
-            xanchor="center",  # Posição horizontal da legenda
-            x=0.5,  # Deslocamento horizontal da legenda
-            orientation="h",  # Orientação horizontal da legenda
-            font=dict(size=15)  # Aumenta o tamanho da fonte da legenda
-        )
-    )
-
-    # Aplica as alterações aos eixos de cada gráfico gerado pelo facet_col
-    for axis in fig.layout:
-        if axis.startswith('xaxis') or axis.startswith('yaxis'):
-            fig.layout[axis].title.font.size = 14
-            fig.layout[axis].tickfont.size = 14
-
-    # Ajusta os títulos dos facet_col
-    for i, model in enumerate(df['Model'].unique()):
-        fig.layout.annotations[i].font.size = 16
-
-    return fig
-
-def plot_rmse_line_plotly(df, stock_name, model_name=None):
-    """
-    Plota um gráfico de linhas interativo mostrando o RMSE para cada Description,
-    filtrando por ação e, opcionalmente, por modelo selecionado.
-
-    Parâmetros:
-        df (pd.DataFrame): DataFrame contendo as métricas de desempenho.
-        stock_name (str): Nome da ação para filtrar os dados.
-        model_name (str, opcional): Nome do modelo para filtrar os dados.
-    """
-
-    # Filtrar os dados com base na ação fornecida
-    filtered_df = df[df["Stock"] == stock_name]
-
-    # Se um modelo específico não for fornecido, plotar para todos os modelos
-    if model_name is None:
-        fig = px.line(
-            filtered_df,
-            x="Description",
-            y="RMSE",
-            color="Model",  # Adiciona uma cor para cada modelo
-            title=f"RMSE por Combinações para {stock_name}",
-            labels={"Description": "Description", "RMSE": "RMSE"},
-            height=500,
-            width=800,
-            markers=True
-        )
-    else:
-        # Filtrar os dados com base no modelo fornecido
-        filtered_df = filtered_df[filtered_df["Model"] == model_name]
-
-        fig = px.line(
-            filtered_df,
-            x="Description",
-            y="RMSE",
-            title=f"RMSE por Combinações para {stock_name}",
-            labels={"Description": "Description", "RMSE": "RMSE"},
-            height=500,
-            width=800,
-            markers=True
-        )
+    fig.update_traces(mode="lines+markers")
 
     fig.update_layout(
         margin=dict(l=20, r=20, t=40, b=20),
-        font=dict(size=10),
-        title_x=0.5
+        font=dict(size=12),
+        title_x=0.5,
+        legend=dict(
+            yanchor="top",
+            y=-0.2,
+            xanchor="center",
+            x=0.5,
+            orientation="v",
+            font=dict(size=14)
+        )
     )
 
+    # Ajusta os eixos
+    for axis in fig.layout:
+        if axis.startswith('xaxis') or axis.startswith('yaxis'):
+            fig.layout[axis].title.font.size = 14
+            fig.layout[axis].title.font.family = 'Arial Black'  # Negrito no label "Stock"
+            fig.layout[axis].tickfont.size = 14
+
+    # Ajusta os títulos dos facet_col para cor preta
+    for annotation in fig.layout.annotations:
+        annotation.text = f"<b>{annotation.text}</b>"
+        annotation.font.size = 14
+        annotation.font.color = 'black'
+
     return fig
+
 
 def process_stocks_and_save_metrics(all_stock_data, num_combination, name_model, save_artifacts=False):
     """

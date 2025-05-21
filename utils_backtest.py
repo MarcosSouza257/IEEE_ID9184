@@ -44,8 +44,10 @@ def make_predictions(stock, df, model='model_2', num_combination=4, output_dir="
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=False)
 
         # Normalizando os dados de teste
+        #X_test_scaled = scaler_X.transform(X_test)
+        #X_test_scaled = X_test_scaled.reshape((X_test_scaled.shape[0], 1, X_test_scaled.shape[1]))  # Reshape para LSTM
         X_test_scaled = scaler_X.transform(X_test)
-        X_test_scaled = X_test_scaled.reshape((X_test_scaled.shape[0], 1, X_test_scaled.shape[1]))  # Reshape para LSTM
+
 
         # Fazendo previsões no conjunto de teste
         y_pred_scaled = model.predict(X_test_scaled).flatten()
