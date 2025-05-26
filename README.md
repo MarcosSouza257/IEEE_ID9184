@@ -113,6 +113,9 @@ Obs.: Teste realizado com o Modelo 2 utilizando a combinação de dados 5 (Googl
   [![ORCID](https://img.shields.io/badge/ORCID-0000--0002--0358--2056-a6ce39?logo=orcid&logoColor=white&style=flat-square)](https://orcid.org/0000-0002-0358-2056)  
   E-mail: jbarbosa@unisinos.br
 
+  ## Afiliação: 
+  Universidade do Vale do Rio dos Sinos (UNISINOS), Brasil
+
 
 
 
