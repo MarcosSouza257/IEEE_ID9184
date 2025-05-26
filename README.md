@@ -91,6 +91,20 @@ Gráfico comparativo entre a performance da estratégia (Modelo 2 - Combinação
    ![alt text](output/BACKTEST/model_2_comb_5_table_result.png) 
 Obs.: Teste realizado com o Modelo 2 utilizando a combinação de dados 5 (Google News + Twitter + IFR + MMS), sem incluir os custos operacionais.
 
+## Authors
+
+Michele J. A. Rosa, Marcos R. Souza, Carlos L. S. Machado, Sandro J. Rigo, and Jorge L. V. Barbosa
+
+**Affiliation:**  
+Universidade do Vale do Rio dos Sinos (UNISINOS), Brazil
+
+**Contact:**  
+- michele.rosa@unemat.br  
+- marcosrsouza@edu.unisinos.br  
+- carlossmachado@edu.unisinos.br  
+- rigo@unisinos.br  
+- jbarbosa@unisinos.br
+
 
 
 
