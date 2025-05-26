@@ -1,5 +1,4 @@
-# IEEE_ID9184
-Brazilian Stock Market Forecast with Heterogeneous Data Integration for a Set of Stocks
+# Brazilian Stock Market Forecast with Heterogeneous Data Integration for a Set of Stocks - ID: 9184
 
 ## 📁 Estrutura do Repositório  
 
@@ -91,19 +90,31 @@ Gráfico comparativo entre a performance da estratégia (Modelo 2 - Combinação
    ![alt text](output/BACKTEST/model_2_comb_5_table_result.png) 
 Obs.: Teste realizado com o Modelo 2 utilizando a combinação de dados 5 (Google News + Twitter + IFR + MMS), sem incluir os custos operacionais.
 
-## Authors
 
-Michele J. A. Rosa, Marcos R. Souza, Carlos L. S. Machado, Sandro J. Rigo, and Jorge L. V. Barbosa
+## Autores
 
-**Affiliation:**  
-Universidade do Vale do Rio dos Sinos (UNISINOS), Brazil
+- **Michele J. A. Rosa**  
+  [ORCID: 0000-0002-7019-204X](https://orcid.org/0000-0002-7019-204X)  
+  E-mail: michele.rosa@unemat.br
 
-**Contact:**  
-- michele.rosa@unemat.br  
-- marcosrsouza@edu.unisinos.br  
-- carlossmachado@edu.unisinos.br  
-- rigo@unisinos.br  
-- jbarbosa@unisinos.br
+- **Marcos R. Souza**  
+  [ORCID: 0009-0002-4694-3146](https://orcid.org/0009-0002-4694-3146)  
+  E-mail: marcosrsouza@edu.unisinos.br
+
+- **Carlos L. S. Machado**  
+  [ORCID: 0000-0002-3849-5462](https://orcid.org/0000-0002-3849-5462)  
+  E-mail: carlossmachado@edu.unisinos.br
+
+- **Sandro J. Rigo**  
+  [ORCID: 0000-0001-8140-5621](https://orcid.org/0000-0001-8140-5621)  
+  E-mail: rigo@unisinos.br
+
+- **Jorge L. V. Barbosa**  
+  [ORCID: 0000-0002-0358-2056](https://orcid.org/0000-0002-0358-2056)  
+  E-mail: jbarbosa@unisinos.br
+
+**Afiliação:** Universidade do Vale do Rio dos Sinos (UNISINOS), Brasil
+
 
 
 
