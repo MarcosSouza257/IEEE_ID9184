@@ -1,5 +1,30 @@
 # Brazilian Stock Market Forecast with Heterogeneous Data Integration for a Set of Stocks - ID: 9184
 
+## Authors
+
+- **Michele J. A. Rosa**  
+  [![ORCID](https://img.shields.io/badge/ORCID-0000--0002--7019--204X-a6ce39?logo=orcid&logoColor=white&style=flat-square)](https://orcid.org/0000-0002-7019-204X)  
+  E-mail: michele.rosa@unemat.br
+
+- **Marcos R. Souza**  
+  [![ORCID](https://img.shields.io/badge/ORCID-0009--0002--4694--3146-a6ce39?logo=orcid&logoColor=white&style=flat-square)](https://orcid.org/0009-0002-4694-3146)  
+  E-mail: marcosrsouza@edu.unisinos.br
+
+- **Carlos L. S. Machado**  
+  [![ORCID](https://img.shields.io/badge/ORCID-0000--0002--3849--5462-a6ce39?logo=orcid&logoColor=white&style=flat-square)](https://orcid.org/0000-0002-3849-5462)  
+  E-mail: carlossmachado@edu.unisinos.br
+
+- **Sandro J. Rigo**  
+  [![ORCID](https://img.shields.io/badge/ORCID-0000--0001--8140--5621-a6ce39?logo=orcid&logoColor=white&style=flat-square)](https://orcid.org/0000-0001-8140-5621)  
+  E-mail: rigo@unisinos.br
+
+- **Jorge L. V. Barbosa**  
+  [![ORCID](https://img.shields.io/badge/ORCID-0000--0002--0358--2056-a6ce39?logo=orcid&logoColor=white&style=flat-square)](https://orcid.org/0000-0002-0358-2056)  
+  E-mail: jbarbosa@unisinos.br
+
+  ## Affiliation: 
+  Universidade do Vale do Rio dos Sinos (UNISINOS), Brasil
+
 ## 📁 Estrutura do Repositório  
 
 A organização das pastas e arquivos é a seguinte:  
@@ -90,31 +115,6 @@ Gráfico comparativo entre a performance da estratégia (Modelo 2 - Combinação
    ![alt text](output/BACKTEST/model_2_comb_5_table_result.png) 
 Obs.: Teste realizado com o Modelo 2 utilizando a combinação de dados 5 (Google News + Twitter + IFR + MMS), sem incluir os custos operacionais.
 
-
-## Autores
-
-- **Michele J. A. Rosa**  
-  [![ORCID](https://img.shields.io/badge/ORCID-0000--0002--7019--204X-a6ce39?logo=orcid&logoColor=white&style=flat-square)](https://orcid.org/0000-0002-7019-204X)  
-  E-mail: michele.rosa@unemat.br
-
-- **Marcos R. Souza**  
-  [![ORCID](https://img.shields.io/badge/ORCID-0009--0002--4694--3146-a6ce39?logo=orcid&logoColor=white&style=flat-square)](https://orcid.org/0009-0002-4694-3146)  
-  E-mail: marcosrsouza@edu.unisinos.br
-
-- **Carlos L. S. Machado**  
-  [![ORCID](https://img.shields.io/badge/ORCID-0000--0002--3849--5462-a6ce39?logo=orcid&logoColor=white&style=flat-square)](https://orcid.org/0000-0002-3849-5462)  
-  E-mail: carlossmachado@edu.unisinos.br
-
-- **Sandro J. Rigo**  
-  [![ORCID](https://img.shields.io/badge/ORCID-0000--0001--8140--5621-a6ce39?logo=orcid&logoColor=white&style=flat-square)](https://orcid.org/0000-0001-8140-5621)  
-  E-mail: rigo@unisinos.br
-
-- **Jorge L. V. Barbosa**  
-  [![ORCID](https://img.shields.io/badge/ORCID-0000--0002--0358--2056-a6ce39?logo=orcid&logoColor=white&style=flat-square)](https://orcid.org/0000-0002-0358-2056)  
-  E-mail: jbarbosa@unisinos.br
-
-  ## Affiliation: 
-  Universidade do Vale do Rio dos Sinos (UNISINOS), Brasil
 
 
 
